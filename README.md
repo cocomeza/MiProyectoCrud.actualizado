@@ -1,78 +1,144 @@
-Instalate los paquetes necesarios (express,dotenv , mongodb, y nodemon para desarrollo).
 
-Cree un archivo index.js donde configure y cree mi servidor Express.
+# 🧠 API REST de Productos - Computación
 
-Configure el servidor para escuchar en el puerto definido en las variables de entorno o el puerto 3000 por defecto.
+Este proyecto es una API REST desarrollada con **Node.js**, **Express** y **MongoDB**, diseñada para gestionar operaciones CRUD sobre una colección de productos del rubro computación.
 
-Utilize dotenv para manejar las variables de entorno, específicamente la URI de MongoDB (MONGO_URI) y el puerto (PORT). 
+---
 
-Defini  los scripts: start para iniciar el servidor normalmente y dev para iniciar el servidor con nodemon, cuando ejecuto "node --watch index.js", inicia la aplicación Node.js con nodemon, permitiendo un desarrollo más eficiente al reiniciar automáticamente el servidor.
+## 🚀 Tecnologías utilizadas
 
-src/mongodb.js: la conexión y desconexión de MongoDB.
+- **Node.js**
+- **Express**
+- **MongoDB** con `MongoClient`
+- **dotenv** – Para manejar variables de entorno
+- **nodemon** – Para desarrollo en tiempo real
 
-.gitignore: para ignorar archivos y carpetas por Git .
+---
 
-Configure la conexión a MongoDB usando el cliente de MongoDB (MongoClient) 
+## 📁 Estructura del proyecto
 
-En cuanto al manejo de errores implemente un middleware para manejar rutas no existentes, devolviendo un error 404.
+```
+project/
+├── index.js              # Archivo principal del servidor
+├── src/
+│   └── mongodb.js        # Configuración de conexión a MongoDB
+├── .env                  # Variables de entorno (no se sube al repo)
+├── .gitignore            # Ignora archivos/carpeta como node_modules
+├── package.json
+└── README.md
+```
 
-Implemente un middleware global para manejar errores, devolviendo un error 500 y logueando el stack trace. 
+---
 
-Defini varias rutas (endpoints) para manejar diferentes operaciones CRUD (Crear, Leer, Actualizar, Eliminar) sobre la colección productos. 
+## ⚙️ Configuración inicial
 
-Cree los Endpoints:
+1. Instalar los paquetes necesarios:
 
-GET /: Responde con un mensaje básico para indicar que la API está funcionando. "API COMPUTACION".
+```bash
+npm install express dotenv mongodb
+npm install --save-dev nodemon
+```
 
-GET /productos: Devuelve todos los productos en la colección. GET /producto/:id: Devuelve un producto específico buscando por su código.
+2. Crear archivo `index.js` y configurar el servidor Express.
 
-GET /productos/buscar: Busca productos por nombre utilizando una expresión regular para hacer la búsqueda insensible a mayúsculas y minúsculas.
+3. Configurar puerto desde variables de entorno `.env` o usar el `3000` por defecto:
 
-POST /productos/agregar: Agrega un nuevo producto a la colección. Valida que se proporcionen todos los campos requeridos (nombre, categoría y precio) y que la categoría sea válida. Asigna un nuevo código al producto basado en el número de documentos actuales en la colección.
+```env
+PORT=3000
+MONGO_URI=tu_uri_de_mongodb
+```
 
-PATCH /producto/:id/modificar-precio: Actualiza el precio de un producto específico identificado por su código. Valida que se proporcione un nuevo precio. 
+4. Scripts definidos en `package.json`:
 
-Postman
-
-Probar que la API está funcionando
-
-Método: GET
-
-URL: http://localhost:3000/
-Respuesta esperada: "API DE COMPUTACIÓN"
-
-2. Obtener todos los productos
-URL: http://localhost:3000/productos
-
-3. Obtener un producto por su ID
-URL: http://localhost:3000/producto/{id}
-Ejemplo: http://localhost:3000/producto/1
-
-4. Buscar productos por nombre
-URL: http://localhost:3000/productos/buscar?nombre={nombre}
-Ejemplo: http://localhost:3000/productos/buscar?nombre=Laptop
-
-5. Agregar un nuevo producto
-
-Método: POST
-
-URL: http://localhost:3000/productos/agregar
-
-6. Eliminar un producto por su ID
-Método: DELETE
-
-URL: http://localhost:3000/producto/{id}
-Ejemplo: http://localhost:3000/producto/7
-
-7. Modificar el precio de un producto por su ID
-
-Método: PATCH
-
-URL: http://localhost:3000/producto/{id}/modificarprecio 
-
-Reemplazo el {id} con el código del producto que deseo modificar y en el body agrego ej:
-{
-    "nuevoPrecio": 1000
+```json
+"scripts": {
+  "start": "node index.js",
+  "dev": "nodemon index.js"
 }
+```
+
+---
+
+## 🔌 Conexión a MongoDB
+
+La conexión se gestiona desde `src/mongodb.js` utilizando el cliente `MongoClient` de MongoDB. También incluye una función para desconectar.
+
+---
+
+## 🧱 Middlewares implementados
+
+- **404 Not Found**: Middleware para rutas no existentes.
+- **500 Error Interno**: Middleware global para errores, mostrando el stack trace.
+
+---
+
+## 🧪 Endpoints disponibles
+
+### ✔️ Verificar funcionamiento
+
+- **GET /**  
+  `http://localhost:3000/`  
+  ➜ Respuesta: `"API DE COMPUTACIÓN"`
+
+---
+
+### 📦 Productos
+
+- **GET /productos**  
+  Devuelve todos los productos.
+
+- **GET /producto/:id**  
+  Devuelve un producto por su código.  
+  Ejemplo:  
+  `http://localhost:3000/producto/1`
+
+- **GET /productos/buscar?nombre={nombre}**  
+  Búsqueda por nombre (insensible a mayúsculas).  
+  Ejemplo:  
+  `http://localhost:3000/productos/buscar?nombre=Laptop`
+
+---
+
+### ➕ Agregar producto
+
+- **POST /productos/agregar**  
+  Crea un nuevo producto.  
+  Campos requeridos en el `body`:
+
+```json
+{
+  "nombre": "Monitor 24''",
+  "categoria": "pantallas",
+  "precio": 1200
+}
+```
+
+- Asigna un nuevo código basado en el número de productos actuales.
+- Valida campos obligatorios y categoría válida.
+
+---
+
+### ✏️ Modificar precio
+
+- **PATCH /producto/:id/modificar-precio**  
+  Modifica el precio de un producto específico.
+
+```json
+{
+  "nuevoPrecio": 1000
+}
+```
+
+---
+
+### 🗑️ Eliminar producto
+
+- **DELETE /producto/:id**  
+  Elimina el producto con el código especificado.  
+  Ejemplo:  
+  `http://localhost:3000/producto/7`
+
+---
+
 
 
